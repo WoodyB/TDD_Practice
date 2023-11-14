@@ -4,7 +4,7 @@ export class BalancedBracketChecker {
      * @param str The string to be checked for balance brackets (all brackets [] {} and () have 
      * an opening bracket and closing bracket in the correct order and sequence)
      * @returns true if the brackets are balanced or if the string contains no brackets
-     */ 
+     */
     public isBalanced(str: string): boolean {
         const bracketStack: string[] = [];
         let result = false;
@@ -30,13 +30,6 @@ export class BalancedBracketChecker {
         return closingBracesRegEx.test(char);
     }
 
-    private isClosingBraceWithoutOpeningBrace(char: string, bracketStack: string[]): boolean {
-        if (this.isClosingBrace(char) && this.isBracketStackEmpty(bracketStack)) {
-            return true;
-        }
-        return false;
-    }
-
     private isBracketStackEmpty(bracketStack: string[]): boolean {
         if (bracketStack.length === 0) {
             return true;
@@ -44,17 +37,20 @@ export class BalancedBracketChecker {
         return false; 
     }
 
-    private isClosingBraceAMatchForOpeningBrace(char: string, bracketStack: string[]): boolean {
-        if (!this.isClosingBrace(char)) {
+    private isClosingBraceAMatchForOpeningBrace(openingBrace: string | undefined, closingBrace: string): boolean {
+        if (!this.isClosingBrace(closingBrace)) {
             return false;
         }
-        if (char === ']' && bracketStack[bracketStack.length - 1] !== '[') {
+        if (openingBrace === undefined) {
             return false;
         }
-        if (char === '}' && bracketStack[bracketStack.length - 1] !== '{') {
+        if (closingBrace === ']' && openingBrace !== '[') {
             return false;
         }
-        if (char === ')' && bracketStack[bracketStack.length - 1] !== '(') {
+        if (closingBrace === '}' && openingBrace !== '{') {
+            return false;
+        }
+        if (closingBrace === ')' && openingBrace !== '(') {
             return false;
         }
 
@@ -63,26 +59,21 @@ export class BalancedBracketChecker {
 
     private processString(str: string, bracketStack: string[]): boolean {
         let success = true;
+        let openingBrace: string | undefined;
 
         for (const char of str) {
             if (this.isOpeningBrace(char)) {
                 bracketStack.push(char);
             }
 
-            if (this.isClosingBraceWithoutOpeningBrace(char, bracketStack)) {
-                success = false;
-                break;
-            }            
-
             if (this.isClosingBrace(char)) {
-                const isClosingBraceAMatchForOpeningBrace = this.isClosingBraceAMatchForOpeningBrace(char, bracketStack);
-                if (!isClosingBraceAMatchForOpeningBrace) {
+                openingBrace = bracketStack.pop();
+                if (!this.isClosingBraceAMatchForOpeningBrace(openingBrace, char)) {
                     success = false;
-                    break;
                 }
-                bracketStack.pop();
-            }
+            }      
         }
+        
         return success;       
     }
 }
