@@ -1,4 +1,10 @@
-export class BalancedBracketChecker {  
+export class BalancedBracketChecker { 
+    /**
+     * 
+     * @param str The string to be checked for balance brackets (all brackets [] {} and () have 
+     * an opening bracket and closing bracket in the correct order and sequence)
+     * @returns true if the brackets are balanced or if the string contains no brackets
+     */ 
     public isBalanced(str: string): boolean {
         const bracketStack: string[] = [];
         let result = false;
