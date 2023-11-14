@@ -7,12 +7,25 @@ export class BalancedBracketChecker {
      */
     public isBalanced(str: string): boolean {
         const bracketStack: string[] = [];
-        let result = false;
+        let openingBrace: string | undefined;
+        let result = true;
         
-        const processStringSuccess = this.processString(str, bracketStack);
+        for (const char of str) {
+            if (this.isOpeningBrace(char)) {
+                bracketStack.push(char);
+            }
 
-        if (this.isBracketStackEmpty(bracketStack) && processStringSuccess) {
-            result = true;
+            if (this.isClosingBrace(char)) {
+                openingBrace = bracketStack.pop();
+                if (!this.isClosingBraceAMatchForOpeningBrace(openingBrace, char)) {
+                    result = false;
+                    break;
+                }
+            }      
+        }
+
+        if (!this.isBracketStackEmpty(bracketStack)) {
+            result = false;
         } 
     
         return result;
@@ -55,26 +68,6 @@ export class BalancedBracketChecker {
         }
 
         return true;
-    }
-
-    private processString(str: string, bracketStack: string[]): boolean {
-        let success = true;
-        let openingBrace: string | undefined;
-
-        for (const char of str) {
-            if (this.isOpeningBrace(char)) {
-                bracketStack.push(char);
-            }
-
-            if (this.isClosingBrace(char)) {
-                openingBrace = bracketStack.pop();
-                if (!this.isClosingBraceAMatchForOpeningBrace(openingBrace, char)) {
-                    success = false;
-                }
-            }      
-        }
-        
-        return success;       
     }
 }
   
