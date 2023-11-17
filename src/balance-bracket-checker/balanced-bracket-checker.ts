@@ -1,4 +1,17 @@
-export class BalancedBracketChecker { 
+type BracePair = {
+    openingBrace: string;
+    closingBrace: string;
+}
+
+export class BalancedBracketChecker {
+    
+    private bracePairs: BracePair[] = [
+        {openingBrace: '{', closingBrace: '}'},
+        {openingBrace: '[', closingBrace: ']'},
+        {openingBrace: '(', closingBrace: ')'},
+        {openingBrace: '<', closingBrace: '>'}
+    ];
+    
     /**
      * 
      * @param str The string to be checked for balance brackets (all brackets [] {} and () have 
@@ -32,15 +45,21 @@ export class BalancedBracketChecker {
     }
 
     private isOpeningBrace(char: string): boolean {
-        const openingBracesRegEx = /[[{(]/g;
-
-        return openingBracesRegEx.test(char);
+        for (const validBracePair of this.bracePairs) {
+            if (char === validBracePair.openingBrace) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private isClosingBrace(char: string): boolean {
-        const closingBracesRegEx = /[\]})]/g;
-
-        return closingBracesRegEx.test(char);
+        for (const validBracePair of this.bracePairs) {
+            if (char === validBracePair.closingBrace) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private isBracketStackEmpty(bracketStack: string[]): boolean {
@@ -57,16 +76,12 @@ export class BalancedBracketChecker {
         if (openingBrace === undefined) {
             return false;
         }
-        if (closingBrace === ']' && openingBrace !== '[') {
-            return false;
-        }
-        if (closingBrace === '}' && openingBrace !== '{') {
-            return false;
-        }
-        if (closingBrace === ')' && openingBrace !== '(') {
-            return false;
-        }
 
+        for (const validBracePair of this.bracePairs) {
+            if (closingBrace === validBracePair.closingBrace && openingBrace !== validBracePair.openingBrace) {
+                return false;
+            }
+        }        
         return true;
     }
 }

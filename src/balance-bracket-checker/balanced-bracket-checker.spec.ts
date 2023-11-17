@@ -76,4 +76,11 @@ describe('BalanceBracketChecker', () => {
     expect(balancedBracketChecker.isBalanced('{()}[[{}]]')).toEqual(true);
   });
 
+  // Adding < > as brackets
+  it('should return true if string contains a opening left < and a closing >', () => {
+    expect(balancedBracketChecker.isBalanced('<>')).toEqual(true);
+  });
+  it('should return false if string contains a opening left < and no closing >', () => {
+    expect(balancedBracketChecker.isBalanced('<')).toEqual(false);
+  });
 });
