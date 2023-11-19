@@ -24,17 +24,14 @@ export class BalancedBracketChecker {
         let result = true;
         
         for (const char of str) {
-            if (this.isOpeningBrace(char)) {
-                bracketStack.push(char);
-            }
+            this.pushOnStackIfOpeningBrace(char, bracketStack);
 
-            if (this.isClosingBrace(char)) {
-                openingBrace = bracketStack.pop();
-                if (!this.isClosingBraceAMatchForOpeningBrace(openingBrace, char)) {
-                    result = false;
-                    break;
-                }
-            }      
+            openingBrace = this.popStackIfClosingBrace(char, bracketStack);            
+                
+            if (!this.doesClosingBraceMatcheOpeningBrace(openingBrace, char)){
+                result = false;
+                break;
+            }
         }
 
         if (!this.isBracketStackEmpty(bracketStack)) {
@@ -42,6 +39,29 @@ export class BalancedBracketChecker {
         } 
     
         return result;
+    }
+
+    private doesClosingBraceMatcheOpeningBrace(openingBrace: string | undefined, char: string): boolean {
+        if (this.isClosingBrace(char)) { 
+            return this.isClosingBraceAMatchForOpeningBrace(openingBrace, char);
+        }                
+        return true;
+    }
+
+    private popStackIfClosingBrace(char: string, bracketStack: string[]) {
+        let openingBrace: string | undefined = undefined;
+        
+        if (this.isClosingBrace(char)) {
+            openingBrace = bracketStack.pop();                
+        }
+
+        return openingBrace;
+    }
+
+    private pushOnStackIfOpeningBrace(char: string, bracketStack: string[]) {
+        if (this.isOpeningBrace(char)) {
+            bracketStack.push(char);
+        }
     }
 
     private isOpeningBrace(char: string): boolean {
@@ -69,10 +89,7 @@ export class BalancedBracketChecker {
         return false; 
     }
 
-    private isClosingBraceAMatchForOpeningBrace(openingBrace: string | undefined, closingBrace: string): boolean {
-        if (!this.isClosingBrace(closingBrace)) {
-            return false;
-        }
+    private isClosingBraceAMatchForOpeningBrace(openingBrace: string | undefined, closingBrace: string): boolean {        
         if (openingBrace === undefined) {
             return false;
         }
