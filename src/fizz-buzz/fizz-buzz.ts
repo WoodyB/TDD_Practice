@@ -1,27 +1,30 @@
-export class FizzBuzz {
-    public checkForFizzBuzz(num: number): string {
-        let returnString = '';
+export function checkForFizzBuzz(num: number): string {
+    let returnString = '';
 
-        if (this.isFizz(num))  {
-            returnString = 'Fizz';
-        }
-
-        if (this.isBuzz(num))  {
-            returnString = returnString.concat('Buzz');
-        }
-
-        if (returnString === '') {
-            returnString = num.toString();
-        }
-        
-        return returnString;
+    if (num % 3 ===  0)  {
+        returnString = 'Fizz';
     }
 
-    private isFizz(num: number): boolean {
-        return (num % 3 ===  0);
+    if (num % 5 ===  0)  {
+        returnString = returnString.concat('Buzz');
     }
 
-    private isBuzz(num: number): boolean {
-        return (num % 5 ===  0);
+    if (returnString === '') {
+        returnString = num.toString();
+    }
+    
+    return returnString;
+}
+
+
+export class Iterator {
+    constructor(private display: (str: string) => void,
+        private renderer: (num: number) => string) {
+    }
+
+    public iterate(count: number): void {
+        for (let i = 1; i <= count; i++) {
+            this.display(this.renderer(i));
+        }
     }
 }
